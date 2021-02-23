@@ -55,9 +55,9 @@ Each of these steps is simple to write down, but each step has its own pitfalls 
 
 ## Userfront removes auth complexity in React apps
 
-Userfront is a service that removes auth complexity. This makes it much easier for you to work with authentication in a React application and, perhaps most importantly, keeps the auth protocols updated for you automatically over time.
+Userfront is a framework that abstracts away auth complexity. This makes it much easier for you to work with authentication in a React application and, perhaps most importantly, keeps all the auth protocols updated for you automatically over time.
 
-The underlying philosophy at Userfront is that world-class auth should not take effort – it should be easy to start and take no effort to maintain. Userfront has all the bells and whistles of authentication, SSO, access control, and multi-tenancy, with a production-ready free tier up to 10,000 monthly active users. For most modern React applications, it’s a great solution.
+The underlying philosophy with Userfront is that world-class auth should not take effort – it should be easy to set up, and security updates should happen for you automatically. Userfront has all the bells and whistles of authentication, Single Sign On (SSO), access control, and multi-tenancy, with a production-ready free tier up to 10,000 monthly active users. For most modern React applications, it’s a great solution.
 
 ### Setting up authentication in React
 
