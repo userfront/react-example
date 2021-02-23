@@ -12,7 +12,7 @@ So React’s responsibility in authentication is to:
 
 1. Send the initial request to the authentication server
 2. Receive and store the access token
-3. Send the access token to your server with each request
+3. Send the access token to your server with each subsequent request
 
 ## JWT access tokens
 
