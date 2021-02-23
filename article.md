@@ -171,7 +171,7 @@ npm install @userfront/react --save
 npm start
 ```
 
-Then, add the form to your home page by importing and initializing Userfront, then updating the `Home()` function to render the form.
+Then add the form to your home page by importing and initializing Userfront, and then updating the `Home()` function to render the form.
 
 ```js
 // src/App.js
