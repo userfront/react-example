@@ -537,3 +537,5 @@ Adding authentication and access control to your React application doesn't have 
 JSON Web Tokens allow you to cleanly separate your auth token generation layer from the rest of your application, making it easier to reason about and more modular for future needs. This architecture also allows you to focus your efforts on your core application, where you are likely to create much more value for yourself or your clients.
 
 For more details on adding auth to your React application, visit the [Userfront guide](https://userfront.com/guide), which covers everything from setting up your auth forms to API documentation, example repositories, working with different languages and frameworks, and more.
+
+[Create a free Userfront project](https://userfront.com)
