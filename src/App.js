@@ -1,5 +1,11 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import Userfront from "@userfront/react";
 
 Userfront.init("demo1234");
@@ -82,5 +88,29 @@ function PasswordReset() {
 }
 
 function Dashboard() {
-  return <h2>Dashboard</h2>;
+  function renderFn({ location }) {
+    // If the user is not logged in, redirect to login
+    if (!Userfront.accessToken()) {
+      return (
+        <Redirect
+          to={{
+            pathname: "/login",
+            state: { from: location },
+          }}
+        />
+      );
+    }
+
+    // If the user is logged in, show the dashboard
+    const userData = JSON.stringify(Userfront.user, null, 2);
+    return (
+      <div>
+        <h2>Dashboard</h2>
+        <pre>{userData}</pre>
+        <button onClick={Userfront.logout}>Logout</button>
+      </div>
+    );
+  }
+
+  return <Route render={renderFn} />;
 }
