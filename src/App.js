@@ -1,5 +1,18 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Userfront from "@userfront/react";
+
+Userfront.init("demo1234");
+
+const SignupForm = Userfront.build({
+  toolId: "nkmbbm",
+});
+const LoginForm = Userfront.build({
+  toolId: "alnkkd",
+});
+const PasswordResetForm = Userfront.build({
+  toolId: "dkbmmo",
+});
 
 export default function App() {
   return (
@@ -11,22 +24,26 @@ export default function App() {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link to="/login">Login</Link>
             </li>
             <li>
-              <Link to="/users">Users</Link>
+              <Link to="/reset">Reset</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
             </li>
           </ul>
         </nav>
 
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/about">
-            <About />
+          <Route path="/login">
+            <Login />
           </Route>
-          <Route path="/users">
-            <Users />
+          <Route path="/reset">
+            <PasswordReset />
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard />
           </Route>
           <Route path="/">
             <Home />
@@ -38,13 +55,32 @@ export default function App() {
 }
 
 function Home() {
-  return <h2>Home</h2>;
+  return (
+    <div>
+      <h2>Home</h2>
+      <SignupForm />
+    </div>
+  );
 }
 
-function About() {
-  return <h2>About</h2>;
+function Login() {
+  return (
+    <div>
+      <h2>Login</h2>
+      <LoginForm />
+    </div>
+  );
 }
 
-function Users() {
-  return <h2>Users</h2>;
+function PasswordReset() {
+  return (
+    <div>
+      <h2>Password Reset</h2>
+      <PasswordResetForm />
+    </div>
+  );
+}
+
+function Dashboard() {
+  return <h2>Dashboard</h2>;
 }

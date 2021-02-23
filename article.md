@@ -74,7 +74,7 @@ Now our React application is available at http://localhost:3000
 
 Just like it says, we can now edit the `src/App.js` file to start working.
 
-Replace the contents of `src/App.js` with the React Router quickstart:
+Replace the contents of `src/App.js` with the following, based on the React Router quickstart:
 
 ```jsx
 // src/App.js
@@ -92,22 +92,26 @@ export default function App() {
               <Link to="/">Home</Link>
             </li>
             <li>
-              <Link to="/about">About</Link>
+              <Link to="/login">Login</Link>
             </li>
             <li>
-              <Link to="/users">Users</Link>
+              <Link to="/reset">Reset</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
             </li>
           </ul>
         </nav>
 
-        {/* A <Switch> looks through its children <Route>s and
-            renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/about">
-            <About />
+          <Route path="/login">
+            <Login />
           </Route>
-          <Route path="/users">
-            <Users />
+          <Route path="/reset">
+            <PasswordReset />
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard />
           </Route>
           <Route path="/">
             <Home />
@@ -122,30 +126,227 @@ function Home() {
   return <h2>Home</h2>;
 }
 
-function About() {
-  return <h2>About</h2>;
+function Login() {
+  return <h2>Login</h2>;
 }
 
-function Users() {
-  return <h2>Users</h2>;
+function PasswordReset() {
+  return <h2>Password Reset</h2>;
+}
+
+function Dashboard() {
+  return <h2>Dashboard</h2>;
 }
 ```
 
 Now we have a very simple app with routing:
 
-![React Router authentication](https://res.cloudinary.com/component/image/upload/v1613069338/permanent/react-router.gif)
+| Route        | Description                              |
+| :----------- | :--------------------------------------- |
+| `/`          | Home page                                |
+| `/login`     | Login page                               |
+| `/reset`     | Password reset page                      |
+| `/dashboard` | User dashboard, for logged in users only |
 
-Next, sign up for a Userfront account at https://userfront.com
+![React Router authentication](https://res.cloudinary.com/component/image/upload/v1614094607/permanent/react-router-basic.gif)
 
-Install the Userfront react package with
+This is all the structure we need to start adding authentication.
+
+### Signup, login, and password reset with Userfront
+
+First, create a Userfront account at https://userfront.com. This will give you a signup form, login form, and password reset form you can use for the next steps.
+
+In the Toolkit section of your Userfront dashboard, you can find the instructions for installing your signup form:
+
+![Userfront installation instructions](https://res.cloudinary.com/component/image/upload/v1614094834/permanent/instructions-react.png)
+
+Follow the instructions by installing the Userfront react package with:
 
 ```js
-npm install @userfront/react –save
+npm install @userfront/react --save
 npm start
 ```
 
-Now we can add a signup form to our page. Edit the `src/App.js` file and replace the React logo with your new signup form:
+Then, add the form to your home page by importing and initializing Userfront, then updating the `Home()` function to render the form.
 
 ```js
-// src/App.js  import "./App.css"; import Userfront from "@userfront/react";  Userfront.init("demo1234");  const SignupForm = Userfront.build({   toolId: "nkmbbm", });  function App() {   return (     <div className="App">       <header className="App-header">         <SignupForm />         <p>           Edit <code>src/App.js</code> and save to reload.         </p>         <a           className="App-link"           href="https://reactjs.org"           target="_blank"           rel="noopener noreferrer"         >           Learn React         </a>       </header>     </div>   ); }  export default App;
+// src/App.js
+
+import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Userfront from "@userfront/react";
+
+Userfront.init("demo1234");
+
+const SignupForm = Userfront.build({
+  toolId: "nkmbbm",
+});
+
+export default function App() {
+  return (
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/reset">Reset</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <Switch>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/reset">
+            <PasswordReset />
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
+  );
+}
+
+function Home() {
+  return (
+    <div>
+      <h2>Home</h2>
+      <SignupForm />
+    </div>
+  );
+}
+
+function Login() {
+  return <h2>Login</h2>;
+}
+
+function PasswordReset() {
+  return <h2>Password Reset</h2>;
+}
+
+function Dashboard() {
+  return <h2>Dashboard</h2>;
+}
 ```
+
+Now the home page has your signup form. Try signing up a user:
+
+![React signup form](https://res.cloudinary.com/component/image/upload/v1614095453/permanent/react-router-signup.png)
+
+The form is in "Test mode" by default, which will create user records in a test environment you can view separately in your Userfront dashboard:
+
+![Userfront test mode](https://res.cloudinary.com/component/image/upload/v1612980797/permanent/create-react-app-2.png)
+
+Continue by adding your login and password reset forms in the same way that you added your signup form:
+
+```js
+// src/App.js
+
+import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import Userfront from "@userfront/react";
+
+Userfront.init("demo1234");
+
+const SignupForm = Userfront.build({
+  toolId: "nkmbbm",
+});
+const LoginForm = Userfront.build({
+  toolId: "alnkkd",
+});
+const PasswordResetForm = Userfront.build({
+  toolId: "dkbmmo",
+});
+
+export default function App() {
+  return (
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/reset">Reset</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <Switch>
+          <Route path="/login">
+            <Login />
+          </Route>
+          <Route path="/reset">
+            <PasswordReset />
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard />
+          </Route>
+          <Route path="/">
+            <Home />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
+  );
+}
+
+function Home() {
+  return (
+    <div>
+      <h2>Home</h2>
+      <SignupForm />
+    </div>
+  );
+}
+
+function Login() {
+  return (
+    <div>
+      <h2>Login</h2>
+      <LoginForm />
+    </div>
+  );
+}
+
+function PasswordReset() {
+  return (
+    <div>
+      <h2>Password Reset</h2>
+      <PasswordResetForm />
+    </div>
+  );
+}
+
+function Dashboard() {
+  return <h2>Dashboard</h2>;
+}
+```
+
+At this point, your signup, login, and password reset should all be functional.
+
+Your users can sign up, log in, and reset their password.
+
+![React signup, login, password reset](https://res.cloudinary.com/component/image/upload/v1614095875/permanent/react-router-3.gif)
