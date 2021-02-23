@@ -363,7 +363,7 @@ Whenever a user is not logged in but tries to visit `/dashboard`, we can redirec
 
 We can accomplish this by updating the `Dashboard` component in `src/App.js` to handle the conditional logic.
 
-When a user is logged in with Userfront, they will have an access token available at `Userfront.accessToken()`. We can check for this token to determine if the user is logged in.
+When a user is logged in with Userfront, they will have an access token available as `Userfront.accessToken()`. We can check for this token to determine if the user is logged in.
 
 Add the `Redirect` component to the `import` statement for React Router, and then update the `Dashboard` component to redirect if no access token is present.
 
