@@ -48,7 +48,7 @@ The flow for using a JWT in a React application looks like this:
 
 1. Your React app requests a JWT whenever the user wants to sign on.
 2. The authentication server generates a JWT using a private key and then sends the JWT back to your React app.
-3. Your React app sends this JWT to your application server whenever your user needs to make a request.
+3. Your React app stores this JWT and sends it to your application server whenever your user needs to make a request.
 4. Your application server verifies the JWT using a public key and then read the payload to determine which user is making the request.
 
 Each of these steps is simple to write down, but each step has its own pitfalls when you actually want to implement it and keep it secure. Especially over time, as new threat vectors emerge and new platforms need to be patched or supported, the security overhead can add up quickly.
