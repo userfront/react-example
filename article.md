@@ -55,9 +55,13 @@ Each of these steps is simple to write down, but each step has its own pitfalls 
 
 ## Userfront removes auth complexity in React apps
 
-Userfront makes it much easier to work with authentication to a React app and, perhaps most importantly, keeps the auth protocols updated automatically over time. Their underlying philosophy is that world-class auth should not take effort – it should be easy to start and maintain. Userfront has the bells and whistles of authentication, SSO, access control, and multi-tenancy, with a production-ready free tier for 10,000 monthly active users. For most modern React applications, it’s a no-brainer.
+Userfront is a service that removes auth complexity. This makes it much easier for you to work with authentication in a React application and, perhaps most importantly, keeps the auth protocols updated for you automatically over time.
+
+The underlying philosophy at Userfront is that world-class auth should not take effort – it should be easy to start and take no effort to maintain. Userfront has all the bells and whistles of authentication, SSO, access control, and multi-tenancy, with a production-ready free tier up to 10,000 monthly active users. For most modern React applications, it’s a great solution.
 
 ### Setting up authentication in React
+
+Now we will go through building all the main aspects of authentication in a React application. The final code for this example is available [here](https://github.com/tyrw/david-walsh-blog-react-auth).
 
 Use your favorite boilerplate to set up your React application and get your build pipeline in order. In this article, we’ll use [Create React App](https://reactjs.org/docs/create-a-new-react-app.html), which does a lot of the setup work for us, and we’ll also add [React Router](https://reactrouter.com/web/guides/quick-start) for our client-side routing. Start by installing Create React App and React Router:
 
