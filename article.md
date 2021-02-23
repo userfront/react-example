@@ -448,9 +448,13 @@ async function getInfo() {
 
   console.log(res);
 }
+
+getInfo();
 ```
 
 To handle a request like this, your backend should read the JWT from the `Authorization` header and verify that it is valid using the public key found in your Userfront dashboard.
+
+Here is an example of Node.js middleware to read and verify the JWT:
 
 ```js
 // Node.js example (Express.js)
