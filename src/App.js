@@ -89,7 +89,7 @@ function PasswordReset() {
 
 function Dashboard() {
   function renderFn({ location }) {
-    // If the user is not logged in, redirect to login
+    // If the user is not logged in, redirect to login page
     if (!Userfront.accessToken()) {
       return (
         <Redirect
