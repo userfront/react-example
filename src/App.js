@@ -1,10 +1,10 @@
 import React from "react";
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   Link,
-  Redirect,
+  Navigate,
 } from "react-router-dom";
 import Userfront from "@userfront/react";
 
@@ -41,20 +41,12 @@ export default function App() {
           </ul>
         </nav>
 
-        <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/reset">
-            <PasswordReset />
-          </Route>
-          <Route path="/dashboard">
-            <Dashboard />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/reset" element={<PasswordReset />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/" element={<Home />} />
+        </Routes>
       </div>
     </Router>
   );
@@ -92,7 +84,7 @@ function Dashboard() {
     // If the user is not logged in, redirect to login page
     if (!Userfront.accessToken()) {
       return (
-        <Redirect
+        <Navigate
           to={{
             pathname: "/login",
             state: { from: location },

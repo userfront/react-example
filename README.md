@@ -39,7 +39,7 @@ Replace the contents of `src/App.js` with the following, based on the React Rout
 // src/App.js
 
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 export default function App() {
   return (
@@ -62,7 +62,7 @@ export default function App() {
           </ul>
         </nav>
 
-        <Switch>
+        <Routes>
           <Route path="/login">
             <Login />
           </Route>
@@ -75,7 +75,7 @@ export default function App() {
           <Route path="/">
             <Home />
           </Route>
-        </Switch>
+        </Routes>
       </div>
     </Router>
   );
@@ -130,7 +130,7 @@ Add the signup form to your home page by importing and initializing Userfront, a
 // src/App.js
 
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Userfront from "@userfront/react";
 
 Userfront.init("demo1234");
@@ -160,7 +160,7 @@ export default function App() {
           </ul>
         </nav>
 
-        <Switch>
+        <Routes>
           <Route path="/login">
             <Login />
           </Route>
@@ -173,7 +173,7 @@ export default function App() {
           <Route path="/">
             <Home />
           </Route>
-        </Switch>
+        </Routes>
       </div>
     </Router>
   );
@@ -215,7 +215,7 @@ Continue by adding your login and password reset forms in the same way that you 
 // src/App.js
 
 import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Userfront from "@userfront/react";
 
 Userfront.init("demo1234");
@@ -251,7 +251,7 @@ export default function App() {
           </ul>
         </nav>
 
-        <Switch>
+        <Routes>
           <Route path="/login">
             <Login />
           </Route>
@@ -264,7 +264,7 @@ export default function App() {
           <Route path="/">
             <Home />
           </Route>
-        </Switch>
+        </Routes>
       </div>
     </Router>
   );
@@ -318,7 +318,7 @@ We can accomplish this by updating the `Dashboard` component in `src/App.js` to 
 
 When a user is logged in, they will have an access token available as `Userfront.accessToken()`. We can check for this token to determine if the user is logged in.
 
-Add the `Redirect` component to the `import` statement for React Router, and then update the `Dashboard` component to redirect if no access token is present.
+Add the `Navigate` component to the `import` statement for React Router, and then update the `Dashboard` component to redirect if no access token is present.
 
 ```js
 // src/App.js
@@ -326,10 +326,10 @@ Add the `Redirect` component to the `import` statement for React Router, and the
 import React from "react";
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   Link,
-  Redirect, // Be sure to add this import
+  Navigate, // Be sure to add this import
 } from "react-router-dom";
 
 // ...
@@ -339,7 +339,7 @@ function Dashboard() {
     // If the user is not logged in, redirect to login
     if (!Userfront.accessToken()) {
       return (
-        <Redirect
+        <Navigate
           to={{
             pathname: "/login",
             state: { from: location },
