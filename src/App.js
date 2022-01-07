@@ -5,6 +5,7 @@ import {
   Route,
   Link,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import Userfront from "@userfront/react";
 
@@ -42,10 +43,17 @@ export default function App() {
         </nav>
 
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/reset" element={<PasswordReset />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/" element={<Home />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <Dashboard />
+              </RequireAuth>
+            }
+          />
         </Routes>
       </div>
     </Router>
@@ -80,29 +88,22 @@ function PasswordReset() {
 }
 
 function Dashboard() {
-  function renderFn({ location }) {
-    // If the user is not logged in, redirect to login page
-    if (!Userfront.accessToken()) {
-      return (
-        <Navigate
-          to={{
-            pathname: "/login",
-            state: { from: location },
-          }}
-        />
-      );
-    }
+  const userData = JSON.stringify(Userfront.user, null, 2);
+  return (
+    <div>
+      <h2>Dashboard</h2>
+      <pre>{userData}</pre>
+      <button onClick={Userfront.logout}>Logout</button>
+    </div>
+  );
+}
 
-    // If the user is logged in, show the dashboard
-    const userData = JSON.stringify(Userfront.user, null, 2);
-    return (
-      <div>
-        <h2>Dashboard</h2>
-        <pre>{userData}</pre>
-        <button onClick={Userfront.logout}>Logout</button>
-      </div>
-    );
+function RequireAuth({ children }) {
+  let location = useLocation();
+  if (!Userfront.tokens.accessToken) {
+    // Redirect to the /login page
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <Route render={renderFn} />;
+  return children;
 }

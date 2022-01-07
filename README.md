@@ -316,7 +316,7 @@ Whenever a user is not logged in but tries to visit `/dashboard`, we can redirec
 
 We can accomplish this by updating the `Dashboard` component in `src/App.js` to handle the conditional logic.
 
-When a user is logged in, they will have an access token available as `Userfront.accessToken()`. We can check for this token to determine if the user is logged in.
+When a user is logged in, they will have an access token available as `Userfront.tokens.accessToken`. We can check for this token to determine if the user is logged in.
 
 Add the `Navigate` component to the `import` statement for React Router, and then update the `Dashboard` component to redirect if no access token is present.
 
@@ -337,7 +337,7 @@ import {
 function Dashboard() {
   function renderFn({ location }) {
     // If the user is not logged in, redirect to login
-    if (!Userfront.accessToken()) {
+    if (!Userfront.tokens.accessToken) {
       return (
         <Navigate
           to={{
@@ -383,7 +383,7 @@ There are many libraries to read and verify JWTs across various languages; here 
 | ----------------------------------------------------- | ----------------------------------------- | -------------------------------------------- | ----------------------------------------- |
 | [Node.js](https://github.com/auth0/node-jsonwebtoken) | [.NET](https://github.com/jwt-dotnet/jwt) | [Python](https://github.com/jpadilla/pyjwt/) | [Java](https://github.com/auth0/java-jwt) |
 
-For Userfront, the access token is available in your React application as `Userfront.accessToken()`.
+For Userfront, the access token is available in your React application as `Userfront.tokens.accessToken`.
 
 Your React application can send this as a `Bearer` token inside the `Authorization` header. For example:
 
@@ -395,7 +395,7 @@ async function getInfo() {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${Userfront.accessToken()}`,
+      Authorization: `Bearer ${Userfront.tokens.accessToken}`,
     },
   });
 
