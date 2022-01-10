@@ -14,10 +14,6 @@ At a high level, React’s responsibility in authentication is to:
 
 ## Set up Create React App
 
-::: tip GitHub repo for this example
-[https://github.com/userfront/react-example](https://github.com/userfront/react-example)
-:::
-
 Start by installing [Create React App](https://reactjs.org/docs/create-a-new-react-app.html) and [React Router](https://github.com/remix-run/react-router):
 
 ```js
@@ -427,17 +423,15 @@ We now have a web application with signup, login, logout, password reset, and a 
 
 ## React authentication with an API
 
-We saw that the frontend has an access token when the user is logged in. You can also use this JWT access token on your backend to protect your API endpoints.
+We saw above that the frontend has an access token available as `Userfront.tokens.accessToken` when the user is logged in. This is a JWT access token that you can also use on your backend to protect your API endpoints.
 
-There are many libraries to read and verify JWTs across various languages; here are a few popular libraries for handling JWTs:
+There are many libraries to read and verify JWTs across various languages. Here are a few popular libraries for handling JWTs:
 
 |                                                       |                                           |                                              |                                           |
 | ----------------------------------------------------- | ----------------------------------------- | -------------------------------------------- | ----------------------------------------- |
 | [Node.js](https://github.com/auth0/node-jsonwebtoken) | [.NET](https://github.com/jwt-dotnet/jwt) | [Python](https://github.com/jpadilla/pyjwt/) | [Java](https://github.com/auth0/java-jwt) |
 
-For Userfront, the access token is available in your React application as `Userfront.tokens.accessToken`.
-
-Your React application can send this as a `Bearer` token inside the `Authorization` header. For example:
+Your React application can send the JWT access token as a `Bearer` token inside the `Authorization` header. For example:
 
 ```js
 // Example of calling an endpoint with a JWT
@@ -457,9 +451,9 @@ async function getInfo() {
 getInfo();
 ```
 
-To handle a request like this, your backend should read the JWT from the `Authorization` header and verify that it is valid using the public key found in your Userfront dashboard.
+To handle a request like this, your backend should read the JWT access token from the `Authorization` header and verify that it is valid using the JWT public key found in your Userfront dashboard.
 
-Here is an example of Node.js middleware to read and verify the JWT:
+Here is an example of Node.js middleware to read and verify the JWT access token:
 
 ```js
 // Node.js example (Express.js)
@@ -481,7 +475,7 @@ function authenticateToken(req, res, next) {
 }
 ```
 
-Using this approach, any invalid or missing tokens would be rejected by your server. You can also reference the contents of the token later in the route handlers using the `req.auth` object:
+Using this approach, any invalid or missing tokens are rejected by your server. You can also reference the contents of the token later in the route handlers using the `req.auth` object:
 
 ```js
 console.log(req.auth);
@@ -526,8 +520,8 @@ app.get("/users", (req, res) => {
 
 From here, you can add social identity providers like Google, Facebook, and LinkedIn to your React application, or business identity providers like Azure AD, Office365, and more.
 
-You do this by creating an application with the identity provider (e.g. Google), and then adding that application's credentials to the Userfront dashboard. The result is a modified sign on experience:
+To do this, create an application with the identity provider (e.g. Google), and then add those SSO credentials to the Userfront dashboard. The result is a modified sign on experience:
 
 ![React SSO form](https://res.cloudinary.com/component/image/upload/v1612378383/permanent/userfront-login.png)
 
-No additional code is needed to implement Single Sign On using this approach: you can add and remove providers without updating your forms or the way you handle JWTs.
+No additional code is needed to implement Single Sign On using this approach: you can add and remove providers without updating your forms or the way you handle JWT access tokens.
