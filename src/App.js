@@ -1,10 +1,11 @@
 import React from "react";
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   Link,
-  Redirect,
+  Navigate,
+  useLocation,
 } from "react-router-dom";
 import Userfront from "@userfront/react";
 
@@ -41,20 +42,19 @@ export default function App() {
           </ul>
         </nav>
 
-        <Switch>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/reset">
-            <PasswordReset />
-          </Route>
-          <Route path="/dashboard">
-            <Dashboard />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/reset" element={<PasswordReset />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <Dashboard />
+              </RequireAuth>
+            }
+          />
+        </Routes>
       </div>
     </Router>
   );
@@ -88,29 +88,22 @@ function PasswordReset() {
 }
 
 function Dashboard() {
-  function renderFn({ location }) {
-    // If the user is not logged in, redirect to login page
-    if (!Userfront.accessToken()) {
-      return (
-        <Redirect
-          to={{
-            pathname: "/login",
-            state: { from: location },
-          }}
-        />
-      );
-    }
+  const userData = JSON.stringify(Userfront.user, null, 2);
+  return (
+    <div>
+      <h2>Dashboard</h2>
+      <pre>{userData}</pre>
+      <button onClick={Userfront.logout}>Logout</button>
+    </div>
+  );
+}
 
-    // If the user is logged in, show the dashboard
-    const userData = JSON.stringify(Userfront.user, null, 2);
-    return (
-      <div>
-        <h2>Dashboard</h2>
-        <pre>{userData}</pre>
-        <button onClick={Userfront.logout}>Logout</button>
-      </div>
-    );
+function RequireAuth({ children }) {
+  let location = useLocation();
+  if (!Userfront.tokens.accessToken) {
+    // Redirect to the /login page
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <Route render={renderFn} />;
+  return children;
 }
