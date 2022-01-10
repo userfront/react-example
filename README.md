@@ -18,7 +18,7 @@ At a high level, React’s responsibility in authentication is to:
 [https://github.com/userfront/react-example](https://github.com/userfront/react-example)
 :::
 
-Start by installing [Create React App](https://reactjs.org/docs/create-a-new-react-app.html) and [React Router](https://reactrouter.com/web/guides/quick-start):
+Start by installing [Create React App](https://reactjs.org/docs/create-a-new-react-app.html) and [React Router](https://github.com/remix-run/react-router):
 
 ```js
 npx create-react-app my-app
@@ -33,7 +33,7 @@ Now our React application is available at http://localhost:3000
 
 Just like it says, we can now edit the `src/App.js` file to start working.
 
-Replace the contents of `src/App.js` with the following, based on the React Router quickstart:
+Replace the contents of `src/App.js` with the following:
 
 ```jsx
 // src/App.js
@@ -63,18 +63,10 @@ export default function App() {
         </nav>
 
         <Routes>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/reset">
-            <PasswordReset />
-          </Route>
-          <Route path="/dashboard">
-            <Dashboard />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/reset" element={<PasswordReset />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>
@@ -113,7 +105,7 @@ This is all the structure we need to start adding authentication.
 
 ## Signup, login, and password reset
 
-In the Toolkit section of your dashboard, locate the instructions for installing your signup form:
+In the Toolkit section of your Userfront dashboard, locate the instructions for installing your signup form:
 
 ![Userfront installation instructions](https://res.cloudinary.com/component/image/upload/v1614094834/permanent/instructions-react.png)
 
@@ -161,18 +153,10 @@ export default function App() {
         </nav>
 
         <Routes>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/reset">
-            <PasswordReset />
-          </Route>
-          <Route path="/dashboard">
-            <Dashboard />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/reset" element={<PasswordReset />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>
@@ -209,7 +193,11 @@ The form is in "Test mode" by default, which will create user records in a test 
 
 ![Userfront test mode](https://res.cloudinary.com/component/image/upload/v1612980797/permanent/create-react-app-2.png)
 
-Continue by adding your login and password reset forms in the same way that you added your signup form:
+Continue by adding your login and password reset forms in the same way that you added your signup form.
+
+And to allow a user to log out, we can call the built-in `Userfront.logout` method.
+
+Update the `Dashboard()` method in `src/App.js` to add the login form, password reset form, and a logout button:
 
 ```js
 // src/App.js
@@ -252,18 +240,10 @@ export default function App() {
         </nav>
 
         <Routes>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/reset">
-            <PasswordReset />
-          </Route>
-          <Route path="/dashboard">
-            <Dashboard />
-          </Route>
-          <Route path="/">
-            <Home />
-          </Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/reset" element={<PasswordReset />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </Router>
@@ -298,13 +278,20 @@ function PasswordReset() {
 }
 
 function Dashboard() {
-  return <h2>Dashboard</h2>;
+  const userData = JSON.stringify(Userfront.user, null, 2);
+  return (
+    <div>
+      <h2>Dashboard</h2>
+      <pre>{userData}</pre>
+      <button onClick={Userfront.logout}>Logout</button>
+    </div>
+  );
 }
 ```
 
-At this point, your signup, login, and password reset should all be functional.
+At this point, your signup, login, and password reset should all be functional. Note that the login form on the `/login` page will automatically redirect to `/dashboard` if you are logged in.
 
-Your users can sign up, log in, and reset their password.
+Your users can sign up, log in, log out, and reset their password.
 
 ![React signup, login, password reset](https://res.cloudinary.com/component/image/upload/v1614095875/permanent/react-router-3.gif)
 
@@ -314,11 +301,9 @@ Usually, we don't want users to be able to view the dashboard unless they are lo
 
 Whenever a user is not logged in but tries to visit `/dashboard`, we can redirect them to the login screen.
 
-We can accomplish this by updating the `Dashboard` component in `src/App.js` to handle the conditional logic.
+We can accomplish this by wrapping the `<Dashboard />` component in a `<RequireAuth>` component that checks to see if the user is logged in. When a user is logged in, their access token is available as `Userfront.tokens.accessToken`, so we check for this.
 
-When a user is logged in, they will have an access token available as `Userfront.tokens.accessToken`. We can check for this token to determine if the user is logged in.
-
-Add the `Navigate` component to the `import` statement for React Router, and then update the `Dashboard` component to redirect if no access token is present.
+The `RequireAuth` component uses `Navigate` and `useLocation` from React Router to redirect the browser if no access token is present.
 
 ```js
 // src/App.js
@@ -329,53 +314,120 @@ import {
   Routes,
   Route,
   Link,
-  Navigate, // Be sure to add this import
+  Navigate,
+  useLocation,
 } from "react-router-dom";
+import Userfront from "@userfront/react";
 
-// ...
+Userfront.init("demo1234");
+
+const SignupForm = Userfront.build({
+  toolId: "nkmbbm",
+});
+const LoginForm = Userfront.build({
+  toolId: "alnkkd",
+});
+const PasswordResetForm = Userfront.build({
+  toolId: "dkbmmo",
+});
+
+export default function App() {
+  return (
+    <Router>
+      <div>
+        <nav>
+          <ul>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/reset">Reset</Link>
+            </li>
+            <li>
+              <Link to="/dashboard">Dashboard</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/reset" element={<PasswordReset />} />
+          <Route
+            path="/dashboard"
+            element={
+              <RequireAuth>
+                <Dashboard />
+              </RequireAuth>
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+function Home() {
+  return (
+    <div>
+      <h2>Home</h2>
+      <SignupForm />
+    </div>
+  );
+}
+
+function Login() {
+  return (
+    <div>
+      <h2>Login</h2>
+      <LoginForm />
+    </div>
+  );
+}
+
+function PasswordReset() {
+  return (
+    <div>
+      <h2>Password Reset</h2>
+      <PasswordResetForm />
+    </div>
+  );
+}
 
 function Dashboard() {
-  function renderFn({ location }) {
-    // If the user is not logged in, redirect to login
-    if (!Userfront.tokens.accessToken) {
-      return (
-        <Navigate
-          to={{
-            pathname: "/login",
-            state: { from: location },
-          }}
-        />
-      );
-    }
+  const userData = JSON.stringify(Userfront.user, null, 2);
+  return (
+    <div>
+      <h2>Dashboard</h2>
+      <pre>{userData}</pre>
+      <button onClick={Userfront.logout}>Logout</button>
+    </div>
+  );
+}
 
-    // If the user is logged in, show the dashboard
-    const userData = JSON.stringify(Userfront.user, null, 2);
-    return (
-      <div>
-        <h2>Dashboard</h2>
-        <pre>{userData}</pre>
-        <button onClick={Userfront.logout}>Logout</button>
-      </div>
-    );
+function RequireAuth({ children }) {
+  let location = useLocation();
+  if (!Userfront.tokens.accessToken) {
+    // Redirect to the /login page
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  return <Route render={renderFn} />;
+  return children;
 }
-```
-
-Notice also that we've added a logout button by calling `Userfront.logout()` directly:
-
-```js
-<button onClick={Userfront.logout}>Logout</button>
 ```
 
 Now, when a user is logged in, they can view the dashboard. If the user is not logged in, they will be redirected to the login page.
 
 ![React protected route](https://res.cloudinary.com/component/image/upload/v1614104770/permanent/react-router-4.png)
 
+We now have a web application with signup, login, logout, password reset, and a protected route. Not bad!
+
 ## React authentication with an API
 
-You will probably want to retrieve user-specific information from your backend. In order to protect these API endpoints, your server should check that incoming JWTs are valid.
+We saw that the frontend has an access token when the user is logged in. You can also use this JWT access token on your backend to protect your API endpoints.
 
 There are many libraries to read and verify JWTs across various languages; here are a few popular libraries for handling JWTs:
 
